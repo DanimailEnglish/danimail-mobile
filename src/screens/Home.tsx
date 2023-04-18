@@ -3,7 +3,7 @@ import {Button} from '@rneui/base';
 import React, {useCallback} from 'react';
 
 import {Screen} from '../components';
-import {RootStackNavigationProp} from '../layouts/types/navigation';
+import type {RootStackNavigationProp} from '../layouts';
 
 export function HomeScreen(): JSX.Element {
   const navigation = useNavigation<RootStackNavigationProp>();

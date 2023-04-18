@@ -3,7 +3,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React from 'react';
 
 import {HomeScreen, RecordVideoScreen} from '../screens';
-import {RootStackParamList} from './types/navigation';
+import type {RootStackParamList} from './types';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 

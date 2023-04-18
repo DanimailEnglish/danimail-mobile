@@ -2,7 +2,7 @@ import {ThemeProvider} from '@rneui/themed';
 import React from 'react';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 
-import {Navigation} from './layouts/Navigation';
+import {Navigation} from './layouts';
 
 function App(): JSX.Element {
   return (

@@ -3,9 +3,9 @@ import React, {forwardRef} from 'react';
 import {ActivityIndicator, StyleSheet, View} from 'react-native';
 import {Camera, useCameraDevices} from 'react-native-vision-camera';
 
-import {useIsAppForeground} from '../lib/useIsAppForeground';
+import {useIsAppForeground} from '../../lib/hooks';
 
-interface CameraViewProps {
+export interface CameraViewProps {
   children?: React.ReactNode;
 }
 

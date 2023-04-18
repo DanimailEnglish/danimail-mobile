@@ -1,11 +1,10 @@
-import {Button, Text} from '@rneui/base';
+import {Button, Skeleton} from '@rneui/base';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {Linking} from 'react-native';
+import {Linking, StyleSheet} from 'react-native';
 import {Camera} from 'react-native-vision-camera';
 
-import {Screen} from '../components';
-import {CameraView} from '../components/CameraView';
-import {useIsAppForeground} from '../lib/useIsAppForeground';
+import {CameraView, Screen, Spacer, Text} from '../components';
+import {useIsAppForeground} from '../lib/hooks';
 
 export function RecordVideoScreen(): JSX.Element {
   const [permissionsGranted, setPermissionsGranted] = useState<boolean>();
@@ -48,8 +47,13 @@ export function RecordVideoScreen(): JSX.Element {
     case false:
       return (
         <Screen>
-          <Text>You denied access to your camera and/or microphone.</Text>
-          <Text>Please go to your settings to enable access for Danimail.</Text>
+          <Spacer justifyContent="center" verticalSpacing={32}>
+            <Text textAlign="center">
+              Danimail does not have permission to use your camera and/or
+              microphone. Please go to your phone settings to give permission
+              for Danimail.
+            </Text>
+          </Spacer>
           <Button onPress={openSettings}>Go to Settings</Button>
         </Screen>
       );
@@ -62,10 +66,6 @@ export function RecordVideoScreen(): JSX.Element {
         </CameraView>
       );
     default:
-      return (
-        <Screen>
-          <Text>Permissions processing</Text>
-        </Screen>
-      );
+      return <Skeleton style={StyleSheet.absoluteFill} />;
   }
 }
