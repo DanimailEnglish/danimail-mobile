@@ -1,5 +1,5 @@
 import React from 'react';
-import {FlexStyle, View, ViewStyle} from 'react-native';
+import {FlexStyle, StyleProp, View, ViewStyle} from 'react-native';
 
 export interface SpacerProps {
   spacing?: number;
@@ -12,7 +12,7 @@ export interface SpacerProps {
   flex?: number;
   justifyContent?: FlexStyle['justifyContent'];
   alignItems?: FlexStyle['alignItems'];
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   children?: React.ReactNode;
 }
 
