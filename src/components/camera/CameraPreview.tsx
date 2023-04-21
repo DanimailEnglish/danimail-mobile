@@ -17,7 +17,7 @@ const CameraPreview = forwardRef<Camera, CameraPreviewProps>(
     const device = devices.front || devices.back;
 
     if (device == null) {
-      return <ActivityIndicator />;
+      return <ActivityIndicator style={style} />;
     }
 
     return (

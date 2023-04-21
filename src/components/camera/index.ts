@@ -1,3 +1,3 @@
 export * from './CameraPreview';
 export * from './RecordButton';
-export * from './RecordingScreen';
+export * from './RecordingView';

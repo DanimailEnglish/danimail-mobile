@@ -6,7 +6,7 @@ import {Spacer} from '../core';
 import {CameraPreview} from './CameraPreview';
 import {RecordButton} from './RecordButton';
 
-export function RecordingScreen() {
+export function RecordingView() {
   const [recording, setRecording] = useState(false);
   const [buttonDisabled, setButtonDisabled] = useState(false);
 
@@ -16,9 +16,11 @@ export function RecordingScreen() {
     camera.current?.startRecording({
       onRecordingFinished: video => {
         Alert.alert(`recording finished, video file: ${video.path}`);
+        setRecording(false);
       },
       onRecordingError: error => {
         Alert.alert(`error: ${error.message}`);
+        setRecording(false);
       },
     });
     setRecording(true);
@@ -28,7 +30,6 @@ export function RecordingScreen() {
     setButtonDisabled(true);
     await camera.current?.stopRecording();
     setButtonDisabled(false);
-    setRecording(false);
   }, []);
 
   const onRecordButtonPress = useCallback(async () => {
