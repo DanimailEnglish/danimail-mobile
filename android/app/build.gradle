@@ -93,9 +93,9 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    namespace "com.danimailmobile"
+    namespace "com.danimail"
     defaultConfig {
-        applicationId "com.danimailmobile"
+        applicationId "com.danimail"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

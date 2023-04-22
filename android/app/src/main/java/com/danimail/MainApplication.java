@@ -1,4 +1,4 @@
-package com.danimailmobile;
+package com.danimail;
 
 import android.app.Application;
 import com.facebook.react.PackageList;
