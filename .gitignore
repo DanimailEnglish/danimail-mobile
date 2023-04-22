@@ -64,3 +64,4 @@ yarn-error.log
 
 # Google credentials
 **/google-services.json
+**/GoogleService-Info.plist

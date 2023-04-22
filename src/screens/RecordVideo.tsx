@@ -3,7 +3,7 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {Linking, StyleSheet} from 'react-native';
 import {Camera} from 'react-native-vision-camera';
 
-import {RecordingScreen, Screen, Spacer, Text} from '../components';
+import {RecordingView, Screen, Spacer, Text} from '../components';
 import {useIsAppForeground} from '../lib/hooks';
 
 export function RecordVideoScreen(): JSX.Element {
@@ -58,7 +58,7 @@ export function RecordVideoScreen(): JSX.Element {
         </Screen>
       );
     case true:
-      return <RecordingScreen />;
+      return <RecordingView />;
     default:
       return <Skeleton style={StyleSheet.absoluteFill} />;
   }
