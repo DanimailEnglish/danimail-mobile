@@ -2,13 +2,13 @@ import {useNavigation} from '@react-navigation/native';
 import {Button} from '@rneui/base';
 import React, {useCallback} from 'react';
 
-import {Screen, Spacer} from '../components';
+import {Screen, Spacer, Text} from '../components';
 import type {RootStackNavigationProp} from '../layouts';
 import {logOut} from '../lib/authentication';
 import {useCurrentUser} from '../providers';
 
 export function HomeScreen(): JSX.Element {
-  const currentUser = useCurrentUser();
+  const {authUser, firestoreUser} = useCurrentUser();
   const navigation = useNavigation<RootStackNavigationProp>();
 
   const navToRecordVideo = useCallback(() => {
@@ -25,7 +25,7 @@ export function HomeScreen(): JSX.Element {
 
   return (
     <Screen>
-      {currentUser == null ? (
+      {authUser == null ? (
         <>
           <Spacer verticalSpacing={4}>
             <Button onPress={navToLogIn}>Log In</Button>
@@ -36,6 +36,12 @@ export function HomeScreen(): JSX.Element {
         </>
       ) : (
         <>
+          <Spacer verticalSpacing={4}>
+            <Text>
+              Welcome,{' '}
+              {`${firestoreUser?.firstName} ${firestoreUser?.lastName}`}
+            </Text>
+          </Spacer>
           <Spacer verticalSpacing={4}>
             <Button onPress={navToRecordVideo}>Record Video</Button>
           </Spacer>

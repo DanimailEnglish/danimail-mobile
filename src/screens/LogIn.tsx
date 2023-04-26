@@ -24,11 +24,9 @@ export function LogInScreen(): JSX.Element {
     password.length === 0;
 
   const handleEmailChange = useCallback(
-    (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
-      setEmail(e.nativeEvent.text);
-      if (e.nativeEvent.text.length === 0) {
-        setEmailError('Email cannot be blank.');
-      } else if (!isEmail(e.nativeEvent.text)) {
+    ({nativeEvent: {text}}: NativeSyntheticEvent<TextInputChangeEventData>) => {
+      setEmail(text);
+      if (!isEmail(text)) {
         setEmailError('Email is invalid.');
       } else {
         setEmailError(undefined);
@@ -38,9 +36,9 @@ export function LogInScreen(): JSX.Element {
   );
 
   const handlePasswordChange = useCallback(
-    (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
-      setPassword(e.nativeEvent.text);
-      if (e.nativeEvent.text.length < 6) {
+    ({nativeEvent: {text}}: NativeSyntheticEvent<TextInputChangeEventData>) => {
+      setPassword(text);
+      if (text.length < 6) {
         setPasswordError('Password is not long enough.');
       } else {
         setPasswordError(undefined);
@@ -75,16 +73,18 @@ export function LogInScreen(): JSX.Element {
   }, [email, password]);
 
   return (
-    <Screen>
+    <Screen scrollable>
       <Input
-        placeholder="Email"
+        label="Email"
+        placeholder="example@abc.com"
         onChange={handleEmailChange}
         value={email}
         errorMessage={emailError}
         disabled={submitting}
       />
       <Input
-        placeholder="Password"
+        label="Password"
+        placeholder="********"
         onChange={handlePasswordChange}
         value={password}
         errorMessage={passwordError}

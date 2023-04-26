@@ -5,6 +5,7 @@ export type RootStackParamList = {
   RecordVideo: undefined;
   LogIn: undefined;
   SignUp: undefined;
+  FinishSignUp: undefined;
 };
 
 export type RootStackNavigationProp =

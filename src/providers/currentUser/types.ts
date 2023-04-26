@@ -1,3 +1,8 @@
 import type {FirebaseAuthTypes} from '@react-native-firebase/auth';
 
-export type CurrentUserContextValue = FirebaseAuthTypes.User | null;
+import {FirestoreUserData} from '../../lib/firestore';
+
+export interface CurrentUserContextValue {
+  authUser: FirebaseAuthTypes.User | null;
+  firestoreUser: FirestoreUserData | null;
+}

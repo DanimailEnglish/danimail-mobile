@@ -3,19 +3,25 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React from 'react';
 
 import {useCurrentUser} from '../providers';
-import {HomeScreen, RecordVideoScreen, SignUpScreen} from '../screens';
-import {LogInScreen} from '../screens/LogIn';
+import {
+  FinishSignUp,
+  HomeScreen,
+  LogInScreen,
+  RecordVideoScreen,
+  SignUpScreen,
+} from '../screens';
 import type {RootStackParamList} from './types';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export function Navigation() {
-  const currentUser = useCurrentUser();
+  const {authUser, firestoreUser} = useCurrentUser();
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">
         <Stack.Screen name="Home" component={HomeScreen} />
-        {currentUser == null ? (
+
+        {authUser == null ? (
           <>
             <Stack.Screen
               name="SignUp"
@@ -29,11 +35,20 @@ export function Navigation() {
             />
           </>
         ) : (
-          <Stack.Screen
-            name="RecordVideo"
-            component={RecordVideoScreen}
-            options={{title: 'Record Video'}}
-          />
+          <>
+            <Stack.Screen
+              name="RecordVideo"
+              component={RecordVideoScreen}
+              options={{title: 'Record Video'}}
+            />
+            {firestoreUser == null && (
+              <Stack.Screen
+                name="FinishSignUp"
+                component={FinishSignUp}
+                options={{title: 'Finish Sign Up', headerBackVisible: false}}
+              />
+            )}
+          </>
         )}
       </Stack.Navigator>
     </NavigationContainer>
