@@ -60,8 +60,12 @@ export async function signUpWithEmail({
     return;
   }
   try {
-    await auth().createUserWithEmailAndPassword(email, password);
+    const userCredential = await auth().createUserWithEmailAndPassword(
+      email,
+      password,
+    );
     if (onSuccess != null) onSuccess();
+    userCredential.user.sendEmailVerification();
   } catch (error) {
     if (isNodeError(error)) {
       if (onError != null) onError(error);
