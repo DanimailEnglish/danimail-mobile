@@ -22,9 +22,7 @@ export function SignUpScreen(): JSX.Element {
   const handleEmailChange = useCallback(
     (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
       setEmail(e.nativeEvent.text);
-      if (e.nativeEvent.text.length === 0) {
-        setEmailError('Email cannot be blank.');
-      } else if (!isEmail(e.nativeEvent.text)) {
+      if (!isEmail(e.nativeEvent.text)) {
         setEmailError('Email is invalid.');
       } else {
         setEmailError(undefined);
