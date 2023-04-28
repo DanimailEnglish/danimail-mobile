@@ -21,7 +21,9 @@ export function Navigation() {
       <Stack.Navigator initialRouteName="Home">
         <Stack.Screen name="Home" component={HomeScreen} />
 
-        {authUser == null || firestoreUser == null ? (
+        {authUser == null ||
+        firestoreUser?.firstName == null ||
+        firestoreUser?.lastName == null ? (
           <>
             <Stack.Screen
               name="SignUp"

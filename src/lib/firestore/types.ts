@@ -1,17 +1,18 @@
 import type {FirebaseFirestoreTypes} from '@react-native-firebase/firestore';
 
-export enum UserRole {
-  Student = 'STUDENT',
-  Admin = 'ADMIN',
-}
-
-export interface FirestoreUserData {
-  firstName: string;
-  lastName: string;
-}
-
-export interface FirestoreUserReadOnlyData {
+export interface FirestoreUserReadOnlyFields {
   createdAt: FirebaseFirestoreTypes.Timestamp;
-  role: UserRole;
+  updatedAt: FirebaseFirestoreTypes.Timestamp;
+  email?: string;
+  role: 'STUDENT' | 'ADMIN';
   unusedVideos: number;
 }
+
+export interface FirestoreUserWritableFields {
+  firstName?: string;
+  lastName?: string;
+}
+
+export interface FirestoreUser
+  extends FirestoreUserReadOnlyFields,
+    FirestoreUserWritableFields {}

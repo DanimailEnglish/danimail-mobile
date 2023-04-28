@@ -1,15 +1,19 @@
 import {useNavigation} from '@react-navigation/native';
 import {Button, Input} from '@rneui/themed';
 import React, {useCallback, useEffect, useState} from 'react';
-import {NativeSyntheticEvent, TextInputChangeEventData} from 'react-native';
+import {
+  Alert,
+  NativeSyntheticEvent,
+  TextInputChangeEventData,
+} from 'react-native';
 
 import {Screen} from '../components';
 import type {RootStackNavigationProp} from '../layouts';
-import {Firestore} from '../lib/firestore';
+import {Functions} from '../lib/functions';
 import {useCurrentUser} from '../providers';
 
 export function FinishSignUp(): JSX.Element {
-  const {authUser, firestoreUser} = useCurrentUser();
+  const {firestoreUser} = useCurrentUser();
   const navigation = useNavigation<RootStackNavigationProp>();
 
   const [firstName, setFirstName] = useState('');
@@ -49,21 +53,28 @@ export function FinishSignUp(): JSX.Element {
   );
 
   const handleSubmit = useCallback(async () => {
-    if (authUser == null) return;
     setSubmitting(true);
-    Firestore.Users.create(authUser.uid, {firstName, lastName});
-    setSubmitting(false);
-  }, [authUser, firstName, lastName]);
+    try {
+      await Functions.updateCurrentUser({
+        firstName,
+        lastName,
+      });
+    } catch (e: unknown) {
+      Alert.alert('Unknown error');
+    } finally {
+      setSubmitting(false);
+    }
+  }, [firstName, lastName]);
 
   useEffect(() => {
     const subscriber = navigation.addListener('beforeRemove', e => {
-      if (firestoreUser == null) {
+      if (firestoreUser?.firstName == null || firestoreUser.lastName) {
         e.preventDefault();
       }
     });
 
     return subscriber;
-  }, [firestoreUser, navigation]);
+  }, [firestoreUser?.firstName, firestoreUser?.lastName, navigation]);
 
   return (
     <Screen scrollable>

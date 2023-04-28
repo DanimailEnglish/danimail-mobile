@@ -1,5 +1,5 @@
 {
-  "name": "Danimail",
+  "name": "danimail",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -10,9 +10,10 @@
     "test": "jest"
   },
   "dependencies": {
-    "@react-native-firebase/app": "^17.4.2",
-    "@react-native-firebase/auth": "^17.4.2",
+    "@react-native-firebase/app": "17.4.3",
+    "@react-native-firebase/auth": "17.4.3",
     "@react-native-firebase/firestore": "^17.4.3",
+    "@react-native-firebase/functions": "^17.4.3",
     "@react-navigation/native": "^6.1.6",
     "@react-navigation/native-stack": "^6.9.12",
     "@rneui/base": "^4.0.0-rc.7",

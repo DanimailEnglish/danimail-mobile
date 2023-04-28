@@ -5,7 +5,31 @@ import React, {useCallback} from 'react';
 import {Screen, Spacer, Text} from '../components';
 import type {RootStackNavigationProp} from '../layouts';
 import {logOut} from '../lib/authentication';
+import {FirestoreUser} from '../lib/firestore';
 import {useCurrentUser} from '../providers';
+
+interface GreetingProps {
+  user: FirestoreUser;
+}
+
+function Greeting({
+  user: {firstName, lastName, createdAt},
+}: GreetingProps): JSX.Element {
+  const dayInMs = 24 * 60 * 60 * 1000;
+  const timeDifference = Date.now() - createdAt.toMillis();
+  const newUser = timeDifference / dayInMs < 1;
+
+  return (
+    <>
+      <Text textAlign="center">
+        {newUser ? 'Welcome,' : 'Welcome back,'} {firstName} {lastName}!
+      </Text>
+      {newUser && (
+        <Text textAlign="center">Thank you for choosing Danimail</Text>
+      )}
+    </>
+  );
+}
 
 export function HomeScreen(): JSX.Element {
   const {authUser, firestoreUser} = useCurrentUser();
@@ -36,10 +60,8 @@ export function HomeScreen(): JSX.Element {
         </>
       ) : (
         <>
-          <Spacer verticalSpacing={4}>
-            <Text>
-              Welcome, {`${firestoreUser.firstName} ${firestoreUser.lastName}`}
-            </Text>
+          <Spacer bottomSpacing={16}>
+            <Greeting user={firestoreUser} />
           </Spacer>
           <Spacer verticalSpacing={4}>
             <Button onPress={navToRecordVideo}>Record Video</Button>

@@ -2,11 +2,7 @@ import auth, {FirebaseAuthTypes} from '@react-native-firebase/auth';
 import React, {useEffect, useMemo, useState} from 'react';
 import {ActivityIndicator} from 'react-native';
 
-import {
-  Firestore,
-  FirestoreUserData,
-  FirestoreUserReadOnlyData,
-} from '../../lib/firestore';
+import {Firestore} from '../../lib/firestore';
 import {CurrentUserContext} from './CurrentUserContext';
 import {CurrentUserContextValue} from './types';
 
@@ -19,18 +15,15 @@ export function CurrentUserProvider({
 }: CurrentUserProviderProps): JSX.Element {
   const [initializing, setInitializing] = useState(true);
   const [authUser, setAuthUser] =
-    useState<CurrentUserContextValue['authUser']>(null);
-  const [firestoreUser, setFirestoreUser] = useState<FirestoreUserData>();
-  const [firestoreUserReadOnly, setFirestoreUserReadOnly] =
-    useState<FirestoreUserReadOnlyData>();
-  const [mergedFirestoreUser, setMergedFirestoreUser] =
-    useState<CurrentUserContextValue['firestoreUser']>(null);
+    useState<CurrentUserContextValue['authUser']>();
+  const [firestoreUser, setFirestoreUser] =
+    useState<CurrentUserContextValue['firestoreUser']>();
 
   // Listen for auth changes
   useEffect(() => {
     const subscriber = auth().onAuthStateChanged(
       (user: FirebaseAuthTypes.User | null) => {
-        setAuthUser(user);
+        setAuthUser(user ?? undefined);
         if (initializing) setInitializing(false);
       },
     );
@@ -42,41 +35,22 @@ export function CurrentUserProvider({
   useEffect(() => {
     const userId = authUser?.uid;
     if (userId != null) {
-      const userUnsubscribe = Firestore.Users.getSnapshot(userId, snapshot => {
+      const subscriber = Firestore.getUser(userId, snapshot => {
         setFirestoreUser(snapshot.data());
       });
-      const userReadOnlyUnsubscribe = Firestore.Users.getReadOnlySnapshot(
-        userId,
-        snapshot => {
-          setFirestoreUserReadOnly(snapshot.data());
-        },
-      );
 
-      return () => {
-        userUnsubscribe();
-        userReadOnlyUnsubscribe();
-      };
+      return subscriber;
     }
     setFirestoreUser(undefined);
     return undefined;
   }, [authUser?.uid]);
 
-  // Merge user data when all data is available
-  useEffect(() => {
-    if (firestoreUser != null && firestoreUserReadOnly != null) {
-      setMergedFirestoreUser({
-        ...firestoreUser,
-        ...firestoreUserReadOnly,
-      });
-    }
-  }, [firestoreUser, firestoreUserReadOnly]);
-
-  const contextValue = useMemo(
+  const contextValue: CurrentUserContextValue = useMemo(
     () => ({
       authUser,
-      firestoreUser: mergedFirestoreUser,
+      firestoreUser,
     }),
-    [authUser, mergedFirestoreUser],
+    [authUser, firestoreUser],
   );
 
   if (initializing) {
