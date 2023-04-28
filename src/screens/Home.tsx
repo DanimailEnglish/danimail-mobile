@@ -25,7 +25,7 @@ export function HomeScreen(): JSX.Element {
 
   return (
     <Screen>
-      {authUser == null ? (
+      {authUser == null || firestoreUser == null ? (
         <>
           <Spacer verticalSpacing={4}>
             <Button onPress={navToLogIn}>Log In</Button>
@@ -38,8 +38,7 @@ export function HomeScreen(): JSX.Element {
         <>
           <Spacer verticalSpacing={4}>
             <Text>
-              Welcome,{' '}
-              {`${firestoreUser?.firstName} ${firestoreUser?.lastName}`}
+              Welcome, {`${firestoreUser.firstName} ${firestoreUser.lastName}`}
             </Text>
           </Spacer>
           <Spacer verticalSpacing={4}>
