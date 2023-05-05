@@ -1,16 +1,19 @@
-import {useNavigation} from '@react-navigation/native';
+import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {Button, Input} from '@rneui/themed';
 import React, {useCallback, useState} from 'react';
 import {NativeSyntheticEvent, TextInputChangeEventData} from 'react-native';
 import isEmail from 'validator/lib/isEmail';
 
 import {Screen} from '../components';
-import type {RootStackNavigationProp} from '../layouts';
+import type {RootStackParamList} from '../layouts';
 import {signUpWithEmail} from '../lib/authentication';
 
-export function SignUpScreen(): JSX.Element {
-  const navigation = useNavigation<RootStackNavigationProp>();
+export type SignUpScreenProps = NativeStackScreenProps<
+  RootStackParamList,
+  'SignUp'
+>;
 
+export function SignUpScreen({navigation}: SignUpScreenProps): JSX.Element {
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState<string>();
   const [password, setPassword] = useState('');

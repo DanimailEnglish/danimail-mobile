@@ -1,12 +1,24 @@
 import React, {useCallback, useRef, useState} from 'react';
-import {Alert, StyleSheet} from 'react-native';
-import {Camera} from 'react-native-vision-camera';
+import {StyleSheet} from 'react-native';
+import {
+  Camera,
+  CameraCaptureError,
+  VideoFile,
+} from 'react-native-vision-camera';
 
 import {Spacer} from '../core';
 import {CameraPreview} from './CameraPreview';
 import {RecordButton} from './RecordButton';
 
-export function RecordingView() {
+export interface RecordingViewProps {
+  onRecordingFinished?: (video: VideoFile) => void;
+  onRecordingError?: (error: CameraCaptureError) => void;
+}
+
+export function RecordingView({
+  onRecordingError,
+  onRecordingFinished,
+}: RecordingViewProps) {
   const [recording, setRecording] = useState(false);
   const [buttonDisabled, setButtonDisabled] = useState(false);
 
@@ -15,16 +27,16 @@ export function RecordingView() {
   const startRecording = useCallback(() => {
     camera.current?.startRecording({
       onRecordingFinished: video => {
-        Alert.alert(`recording finished, video file: ${video.path}`);
+        if (onRecordingFinished != null) onRecordingFinished(video);
         setRecording(false);
       },
       onRecordingError: error => {
-        Alert.alert(`error: ${error.message}`);
+        if (onRecordingError != null) onRecordingError(error);
         setRecording(false);
       },
     });
     setRecording(true);
-  }, []);
+  }, [onRecordingError, onRecordingFinished]);
 
   const stopRecording = useCallback(async () => {
     setButtonDisabled(true);

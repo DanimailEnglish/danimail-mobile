@@ -1,9 +1,9 @@
-import {useNavigation} from '@react-navigation/native';
+import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {Button} from '@rneui/base';
 import React, {useCallback} from 'react';
 
 import {Screen, Spacer, Text} from '../components';
-import type {RootStackNavigationProp} from '../layouts';
+import type {RootStackParamList} from '../layouts';
 import {logOut} from '../lib/authentication';
 import {FirestoreUser} from '../lib/firestore';
 import {useCurrentUser} from '../providers';
@@ -31,9 +31,13 @@ function Greeting({
   );
 }
 
-export function HomeScreen(): JSX.Element {
+export type HomeScreenProps = NativeStackScreenProps<
+  RootStackParamList,
+  'Home'
+>;
+
+export function HomeScreen({navigation}: HomeScreenProps): JSX.Element {
   const {authUser, firestoreUser} = useCurrentUser();
-  const navigation = useNavigation<RootStackNavigationProp>();
 
   const navToRecordVideo = useCallback(() => {
     navigation.navigate('RecordVideo');

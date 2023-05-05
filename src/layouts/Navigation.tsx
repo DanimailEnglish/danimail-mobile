@@ -1,5 +1,6 @@
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {Button} from '@rneui/themed';
 import React from 'react';
 
 import {useCurrentUser} from '../providers';
@@ -7,12 +8,17 @@ import {
   FinishSignUp,
   HomeScreen,
   LogInScreen,
+  RecordingPreviewScreen,
   RecordVideoScreen,
   SignUpScreen,
 } from '../screens';
 import type {RootStackParamList} from './types';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
+
+function PlaceholderSendButton() {
+  return <Button title="Send" type="clear" />;
+}
 
 export function Navigation() {
   const {authUser, firestoreUser} = useCurrentUser();
@@ -42,11 +48,21 @@ export function Navigation() {
             />
           </>
         ) : (
-          <Stack.Screen
-            name="RecordVideo"
-            component={RecordVideoScreen}
-            options={{title: 'Record Video'}}
-          />
+          <>
+            <Stack.Screen
+              name="RecordVideo"
+              component={RecordVideoScreen}
+              options={{title: 'Record Video'}}
+            />
+            <Stack.Screen
+              name="RecordingPreview"
+              component={RecordingPreviewScreen}
+              options={{
+                title: 'Recording Preview',
+                headerRight: PlaceholderSendButton,
+              }}
+            />
+          </>
         )}
       </Stack.Navigator>
     </NavigationContainer>

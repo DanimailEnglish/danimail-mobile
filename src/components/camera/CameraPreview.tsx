@@ -26,7 +26,6 @@ const CameraPreview = forwardRef<Camera, CameraPreviewProps>(
         device={device}
         video
         audio
-        preset="medium"
         isActive={isAppForeground && isFocused}
         style={style}
       />

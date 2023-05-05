@@ -68,7 +68,6 @@ export function LogInScreen(): JSX.Element {
             throw error;
         }
       },
-      onSuccess: () => setSubmitting(false),
     });
   }, [email, password]);
 

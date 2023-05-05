@@ -1,12 +1,25 @@
+import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {Button, Skeleton} from '@rneui/base';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {Linking, StyleSheet} from 'react-native';
-import {Camera} from 'react-native-vision-camera';
+import {Alert, Linking, StyleSheet} from 'react-native';
+import {
+  Camera,
+  CameraCaptureError,
+  VideoFile,
+} from 'react-native-vision-camera';
 
 import {RecordingView, Screen, Spacer, Text} from '../components';
+import type {RootStackParamList} from '../layouts';
 import {useIsAppForeground} from '../lib/hooks';
 
-export function RecordVideoScreen(): JSX.Element {
+export type RecordVideoScreenProps = NativeStackScreenProps<
+  RootStackParamList,
+  'RecordVideo'
+>;
+
+export function RecordVideoScreen({
+  navigation,
+}: RecordVideoScreenProps): JSX.Element {
   const [permissionsGranted, setPermissionsGranted] = useState<boolean>();
   const permissionsRequested = useRef<boolean>(false);
 
@@ -43,6 +56,17 @@ export function RecordVideoScreen(): JSX.Element {
     Linking.openSettings();
   }, []);
 
+  const handleRecordingFinished = useCallback(
+    (video: VideoFile) => {
+      navigation.navigate('RecordingPreview', {videoFile: video.path});
+    },
+    [navigation],
+  );
+
+  const handleRecordingError = useCallback((error: CameraCaptureError) => {
+    Alert.alert(`An error occurred while recording: ${error.message}`);
+  }, []);
+
   switch (permissionsGranted) {
     case false:
       return (
@@ -58,7 +82,12 @@ export function RecordVideoScreen(): JSX.Element {
         </Screen>
       );
     case true:
-      return <RecordingView />;
+      return (
+        <RecordingView
+          onRecordingError={handleRecordingError}
+          onRecordingFinished={handleRecordingFinished}
+        />
+      );
     default:
       return <Skeleton style={StyleSheet.absoluteFill} />;
   }
