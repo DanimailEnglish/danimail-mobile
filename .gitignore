@@ -65,3 +65,12 @@ yarn-error.log
 # Google credentials
 **/google-services.json
 **/GoogleService-Info.plist
+
+# Yarn
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
