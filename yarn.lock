@@ -2568,6 +2568,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/react-native-video@npm:^5.0.14":
+  version: 5.0.14
+  resolution: "@types/react-native-video@npm:5.0.14"
+  dependencies:
+    "@types/react": "*"
+    "@types/react-native": "*"
+  checksum: 9b58ab6651d541172dd8f91387165c16c2081b6c5eb4719eaf205aec4f38903dd3e1689aefb7dab34feefb9f5d9feee35ff8d190bc0538ed183a985aae2ee6eb
+  languageName: node
+  linkType: hard
+
+"@types/react-native@npm:*":
+  version: 0.71.6
+  resolution: "@types/react-native@npm:0.71.6"
+  dependencies:
+    "@types/react": "*"
+  checksum: 067325c549e7181c73cdf8da1cb7bdef226124d91c3f72fcc2fb8b3c98a2d184f74a16ba627e3192253103bd651e8238d0e722b93f762b3f1a3f5b96773ec7a5
+  languageName: node
+  linkType: hard
+
 "@types/react-native@npm:^0.70":
   version: 0.70.13
   resolution: "@types/react-native@npm:0.70.13"
@@ -4056,6 +4075,7 @@ __metadata:
     "@tsconfig/react-native": ^2.0.2
     "@types/jest": ^29.2.1
     "@types/react": ^18.0.24
+    "@types/react-native-video": ^5.0.14
     "@types/react-test-renderer": ^18.0.0
     "@types/validator": ^13.7.15
     "@typescript-eslint/eslint-plugin": ^5.58.0
