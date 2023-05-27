@@ -1,38 +1,27 @@
-import {useIsFocused} from '@react-navigation/native';
-import React, {forwardRef} from 'react';
-import {ActivityIndicator, StyleProp, ViewStyle} from 'react-native';
-import {Camera, useCameraDevices} from 'react-native-vision-camera';
+import { useIsFocused } from "@react-navigation/native";
+import { Camera, CameraType } from "expo-camera";
+import React, { forwardRef } from "react";
+import { ActivityIndicator, StyleProp, ViewStyle } from "react-native";
 
-import {useIsAppForeground} from '../../lib/hooks';
+import { useIsAppForeground } from "../../lib/hooks";
 
 export interface CameraPreviewProps {
+  type?: CameraType;
   style?: StyleProp<ViewStyle>;
 }
 
 const CameraPreview = forwardRef<Camera, CameraPreviewProps>(
-  ({style}, ref): JSX.Element => {
+  ({ type, style }, ref): JSX.Element => {
     const isAppForeground = useIsAppForeground();
     const isFocused = useIsFocused();
-    const devices = useCameraDevices();
-    const device = devices.front || devices.back;
 
-    if (device == null) {
-      return <ActivityIndicator style={style} />;
+    if (isAppForeground && isFocused) {
+      return <Camera ref={ref} type={type} style={style} />;
     }
-
-    return (
-      <Camera
-        ref={ref}
-        device={device}
-        video
-        audio
-        isActive={isAppForeground && isFocused}
-        style={style}
-      />
-    );
+    return <ActivityIndicator style={style} />;
   },
 );
 
-CameraPreview.displayName = 'CameraPreview';
+CameraPreview.displayName = "CameraPreview";
 
-export {CameraPreview};
+export { CameraPreview };

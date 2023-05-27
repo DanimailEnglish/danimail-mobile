@@ -1,9 +1,9 @@
-import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {Button} from '@rneui/themed';
-import React from 'react';
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { Button } from "@rneui/themed";
+import React from "react";
 
-import {useCurrentUser} from '../providers';
+import { useCurrentUser } from "../providers";
 import {
   FinishSignUp,
   HomeScreen,
@@ -11,8 +11,8 @@ import {
   RecordingPreviewScreen,
   RecordVideoScreen,
   SignUpScreen,
-} from '../screens';
-import type {RootStackParamList} from './types';
+} from "../screens";
+import type { RootStackParamList } from "./types";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -21,7 +21,8 @@ function PlaceholderSendButton() {
 }
 
 export function Navigation() {
-  const {authUser, firestoreUser} = useCurrentUser();
+  const { authUser, firestoreUser } = useCurrentUser();
+
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">
@@ -34,17 +35,17 @@ export function Navigation() {
             <Stack.Screen
               name="SignUp"
               component={SignUpScreen}
-              options={{title: 'Sign Up'}}
+              options={{ title: "Sign Up" }}
             />
             <Stack.Screen
               name="FinishSignUp"
               component={FinishSignUp}
-              options={{title: 'Finish Sign Up', headerBackVisible: false}}
+              options={{ title: "Finish Sign Up", headerBackVisible: false }}
             />
             <Stack.Screen
               name="LogIn"
               component={LogInScreen}
-              options={{title: 'Log In'}}
+              options={{ title: "Log In" }}
             />
           </>
         ) : (
@@ -52,13 +53,13 @@ export function Navigation() {
             <Stack.Screen
               name="RecordVideo"
               component={RecordVideoScreen}
-              options={{title: 'Record Video'}}
+              options={{ title: "Record Video" }}
             />
             <Stack.Screen
               name="RecordingPreview"
               component={RecordingPreviewScreen}
               options={{
-                title: 'Recording Preview',
+                title: "Recording Preview",
                 headerRight: PlaceholderSendButton,
               }}
             />

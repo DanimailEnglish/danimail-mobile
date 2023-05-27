@@ -1,73 +1,70 @@
-import type {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {Button, Skeleton} from '@rneui/base';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {Alert, Linking, StyleSheet} from 'react-native';
-import {
-  Camera,
-  CameraCaptureError,
-  VideoFile,
-} from 'react-native-vision-camera';
+import type { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { Button, Skeleton } from "@rneui/base";
+import { Camera } from "expo-camera";
+import React, { useCallback, useEffect } from "react";
+import { Alert, Linking, StyleSheet } from "react-native";
 
-import {RecordingView, Screen, Spacer, Text} from '../components';
-import type {RootStackParamList} from '../layouts';
-import {useIsAppForeground} from '../lib/hooks';
+import { RecordingView, Screen, Spacer, Text } from "../components";
+import type { RootStackParamList } from "../layouts";
+import { isNodeError } from "../lib/isNodeError";
 
 export type RecordVideoScreenProps = NativeStackScreenProps<
   RootStackParamList,
-  'RecordVideo'
+  "RecordVideo"
 >;
 
 export function RecordVideoScreen({
   navigation,
 }: RecordVideoScreenProps): JSX.Element {
-  const [permissionsGranted, setPermissionsGranted] = useState<boolean>();
-  const permissionsRequested = useRef<boolean>(false);
-
-  const isAppForeground = useIsAppForeground();
+  const [cameraPermission, requestCameraPermission] =
+    Camera.useCameraPermissions();
+  const [microphonePermission, requestMicrophonePermission] =
+    Camera.useMicrophonePermissions();
 
   useEffect(() => {
-    async function getPermissions() {
-      if (!isAppForeground) {
-        return;
-      }
-
-      let cameraPermissions = await Camera.getCameraPermissionStatus();
-      let micPermissions = await Camera.getMicrophonePermissionStatus();
-
-      if (!permissionsRequested.current) {
-        permissionsRequested.current = true;
-        if (cameraPermissions !== 'authorized') {
-          cameraPermissions = await Camera.requestCameraPermission();
-        }
-        if (micPermissions !== 'authorized') {
-          micPermissions = await Camera.requestMicrophonePermission();
-        }
-      }
-
-      setPermissionsGranted(
-        cameraPermissions === 'authorized' && micPermissions === 'authorized',
-      );
+    if (
+      cameraPermission?.granted === false &&
+      cameraPermission?.canAskAgain === true
+    ) {
+      requestCameraPermission().catch(() => {
+        Alert.alert("Error while requesting camera permission");
+      });
     }
-
-    getPermissions();
-  }, [isAppForeground]);
+    if (
+      microphonePermission?.granted === false &&
+      microphonePermission?.canAskAgain === true
+    ) {
+      requestMicrophonePermission().catch(() => {
+        Alert.alert("Error while requesting microphone permission");
+      });
+    }
+  }, [
+    cameraPermission?.canAskAgain,
+    cameraPermission?.granted,
+    microphonePermission?.canAskAgain,
+    microphonePermission?.granted,
+    requestCameraPermission,
+    requestMicrophonePermission,
+  ]);
 
   const openSettings = useCallback(() => {
-    Linking.openSettings();
+    Linking.openSettings().catch(() => Alert.alert("Error going to settings"));
   }, []);
 
   const handleRecordingFinished = useCallback(
-    (video: VideoFile) => {
-      navigation.navigate('RecordingPreview', {videoFile: video.path});
+    (video: { uri: string }) => {
+      navigation.navigate("RecordingPreview", { videoFile: video.uri });
     },
     [navigation],
   );
 
-  const handleRecordingError = useCallback((error: CameraCaptureError) => {
-    Alert.alert(`An error occurred while recording: ${error.message}`);
+  const handleRecordingError = useCallback((error: unknown) => {
+    if (isNodeError(error)) {
+      Alert.alert(`An error occurred while recording: ${error.message}`);
+    }
   }, []);
 
-  switch (permissionsGranted) {
+  switch (cameraPermission?.granted && microphonePermission?.granted) {
     case false:
       return (
         <Screen>

@@ -1,19 +1,20 @@
-import {Button, Input} from '@rneui/themed';
-import React, {useCallback, useState} from 'react';
+import { Button, Input } from "@rneui/themed";
+import React, { useCallback, useState } from "react";
 import {
   Alert,
   NativeSyntheticEvent,
   TextInputChangeEventData,
-} from 'react-native';
-import isEmail from 'validator/lib/isEmail';
+} from "react-native";
+import isEmail from "validator/lib/isEmail";
 
-import {Screen} from '../components';
-import {logInWithEmail} from '../lib/authentication';
+import { Screen } from "../components";
+import { logInWithEmail } from "../lib/authentication";
+import { isNodeError } from "../lib/isNodeError";
 
 export function LogInScreen(): JSX.Element {
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState<string>();
-  const [password, setPassword] = useState('');
+  const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState<string>();
   const [submitting, setSubmitting] = useState(false);
   const submitDisabled =
@@ -24,10 +25,12 @@ export function LogInScreen(): JSX.Element {
     password.length === 0;
 
   const handleEmailChange = useCallback(
-    ({nativeEvent: {text}}: NativeSyntheticEvent<TextInputChangeEventData>) => {
+    ({
+      nativeEvent: { text },
+    }: NativeSyntheticEvent<TextInputChangeEventData>) => {
       setEmail(text);
       if (!isEmail(text)) {
-        setEmailError('Email is invalid.');
+        setEmailError("Email is invalid.");
       } else {
         setEmailError(undefined);
       }
@@ -36,10 +39,12 @@ export function LogInScreen(): JSX.Element {
   );
 
   const handlePasswordChange = useCallback(
-    ({nativeEvent: {text}}: NativeSyntheticEvent<TextInputChangeEventData>) => {
+    ({
+      nativeEvent: { text },
+    }: NativeSyntheticEvent<TextInputChangeEventData>) => {
       setPassword(text);
       if (text.length < 6) {
-        setPasswordError('Password is not long enough.');
+        setPasswordError("Password is not long enough.");
       } else {
         setPasswordError(undefined);
       }
@@ -52,22 +57,25 @@ export function LogInScreen(): JSX.Element {
     logInWithEmail({
       email,
       password,
-      onError: error => {
-        setSubmitting(false);
+    }).catch((error) => {
+      setSubmitting(false);
+      if (isNodeError(error)) {
         switch (error.code) {
-          case 'auth/user-disabled':
-            Alert.alert('This user has been disabled.');
+          case "auth/user-disabled":
+            Alert.alert("This user has been disabled.");
             break;
-          case 'auth/user-not-found':
-            setEmailError('Email does not exist.');
+          case "auth/user-not-found":
+            setEmailError("Email does not exist.");
             break;
-          case 'auth/wrong-password':
-            setPasswordError('Password is incorrect.');
+          case "auth/wrong-password":
+            setPasswordError("Password is incorrect.");
             break;
           default:
-            throw error;
+            Alert.alert("Unknown error while logging in.");
         }
-      },
+      } else {
+        Alert.alert("Unknown error while logging in.");
+      }
     });
   }, [email, password]);
 

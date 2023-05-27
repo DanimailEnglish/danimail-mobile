@@ -1,17 +1,12 @@
-import firestore, {
-  FirebaseFirestoreTypes,
-} from '@react-native-firebase/firestore';
+import { doc, DocumentSnapshot, onSnapshot } from "firebase/firestore";
 
-import {FirestoreUser} from './types';
+import { db } from "../../../firebaseConfig";
+import { FirestoreUser } from "./types";
 
 export function getUser(
   userId: string,
-  onNext: (
-    snapshot: FirebaseFirestoreTypes.DocumentSnapshot<FirestoreUser>,
-  ) => void,
+  onNext: (snapshot: DocumentSnapshot<FirestoreUser>) => void,
   onError?: (error: Error) => void,
 ): () => void {
-  return firestore()
-    .doc<FirestoreUser>(`users/${userId}`)
-    .onSnapshot(onNext, onError);
+  return onSnapshot(doc(db, "users", userId), onNext, onError);
 }

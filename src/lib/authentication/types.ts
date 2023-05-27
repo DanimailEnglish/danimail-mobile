@@ -1,10 +1,8 @@
-import type {FirebaseAuthTypes} from '@react-native-firebase/auth';
+import type { AuthError } from "firebase/auth";
 
-export type FirebaseAuthError = FirebaseAuthTypes.NativeFirebaseAuthError;
+export type FirebaseAuthError = AuthError;
 
 export interface SignUpWithEmailOpts {
   email: string;
   password: string;
-  onSuccess?: () => void | Promise<void>;
-  onError?: (error: NodeJS.ErrnoException) => void | Promise<void>;
 }

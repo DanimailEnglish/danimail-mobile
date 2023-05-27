@@ -55,6 +55,7 @@ module.exports = {
     'import/no-cycle': 'error',
     'import/prefer-default-export': 'off',
     'prettier/prettier': 'error',
+    'promise/always-return': 'off',
     'react/display-name': 'warn',
     'react/jsx-props-no-spreading': 'off',
     'react/prop-types': 'off',
@@ -64,5 +65,5 @@ module.exports = {
     'simple-import-sort/exports': 'error',
     'simple-import-sort/imports': 'error',
   },
-  ignorePatterns: [".eslintrc.js"]
+  ignorePatterns: [".eslintrc.js", "metro.config.js"]
 };

@@ -1,19 +1,19 @@
-import type {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {Button} from '@rneui/base';
-import React, {useCallback} from 'react';
+import type { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { Button } from "@rneui/base";
+import React, { useCallback } from "react";
 
-import {Screen, Spacer, Text} from '../components';
-import type {RootStackParamList} from '../layouts';
-import {logOut} from '../lib/authentication';
-import {FirestoreUser} from '../lib/firestore';
-import {useCurrentUser} from '../providers';
+import { Screen, Spacer, Text } from "../components";
+import type { RootStackParamList } from "../layouts";
+import { logOut } from "../lib/authentication";
+import { FirestoreUser } from "../lib/firestore";
+import { useCurrentUser } from "../providers";
 
 interface GreetingProps {
   user: FirestoreUser;
 }
 
 function Greeting({
-  user: {firstName, lastName, createdAt},
+  user: { firstName, lastName, createdAt },
 }: GreetingProps): JSX.Element {
   const dayInMs = 24 * 60 * 60 * 1000;
   const timeDifference = Date.now() - createdAt.toMillis();
@@ -22,7 +22,7 @@ function Greeting({
   return (
     <>
       <Text textAlign="center">
-        {newUser ? 'Welcome,' : 'Welcome back,'} {firstName} {lastName}!
+        {newUser ? "Welcome," : "Welcome back,"} {firstName} {lastName}!
       </Text>
       {newUser && (
         <Text textAlign="center">Thank you for choosing Danimail</Text>
@@ -33,22 +33,22 @@ function Greeting({
 
 export type HomeScreenProps = NativeStackScreenProps<
   RootStackParamList,
-  'Home'
+  "Home"
 >;
 
-export function HomeScreen({navigation}: HomeScreenProps): JSX.Element {
-  const {authUser, firestoreUser} = useCurrentUser();
+export function HomeScreen({ navigation }: HomeScreenProps): JSX.Element {
+  const { authUser, firestoreUser } = useCurrentUser();
 
   const navToRecordVideo = useCallback(() => {
-    navigation.navigate('RecordVideo');
+    navigation.navigate("RecordVideo");
   }, [navigation]);
 
   const navToLogIn = useCallback(() => {
-    navigation.navigate('LogIn');
+    navigation.navigate("LogIn");
   }, [navigation]);
 
   const navToSignUp = useCallback(() => {
-    navigation.navigate('SignUp');
+    navigation.navigate("SignUp");
   }, [navigation]);
 
   return (

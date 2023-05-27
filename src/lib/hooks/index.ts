@@ -1,1 +1,1 @@
-export * from './useIsAppForeground';
+export * from "./useIsAppForeground";

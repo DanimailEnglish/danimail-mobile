@@ -1,18 +1,14 @@
-import React, {useCallback, useRef, useState} from 'react';
-import {StyleSheet} from 'react-native';
-import {
-  Camera,
-  CameraCaptureError,
-  VideoFile,
-} from 'react-native-vision-camera';
+import { Camera, CameraType } from "expo-camera";
+import React, { useCallback, useRef, useState } from "react";
+import { Alert, StyleSheet } from "react-native";
 
-import {Spacer} from '../core';
-import {CameraPreview} from './CameraPreview';
-import {RecordButton} from './RecordButton';
+import { Spacer } from "../core";
+import { CameraPreview } from "./CameraPreview";
+import { RecordButton } from "./RecordButton";
 
 export interface RecordingViewProps {
-  onRecordingFinished?: (video: VideoFile) => void;
-  onRecordingError?: (error: CameraCaptureError) => void;
+  onRecordingFinished?: (video: { uri: string }) => void;
+  onRecordingError?: (error: unknown) => void;
 }
 
 export function RecordingView({
@@ -24,42 +20,45 @@ export function RecordingView({
 
   const camera = useRef<Camera>(null);
 
-  const startRecording = useCallback(() => {
-    camera.current?.startRecording({
-      onRecordingFinished: video => {
-        if (onRecordingFinished != null) onRecordingFinished(video);
-        setRecording(false);
-      },
-      onRecordingError: error => {
-        if (onRecordingError != null) onRecordingError(error);
-        setRecording(false);
-      },
-    });
+  const startRecording = useCallback(async () => {
     setRecording(true);
+    try {
+      const video = await camera.current?.recordAsync();
+      if (onRecordingFinished != null) onRecordingFinished(video);
+      setRecording(false);
+    } catch (error: unknown) {
+      if (onRecordingError != null) onRecordingError(error);
+      setRecording(false);
+    }
   }, [onRecordingError, onRecordingFinished]);
 
-  const stopRecording = useCallback(async () => {
+  const stopRecording = useCallback(() => {
     setButtonDisabled(true);
-    await camera.current?.stopRecording();
+    camera.current?.stopRecording();
     setButtonDisabled(false);
   }, []);
 
-  const onRecordButtonPress = useCallback(async () => {
+  const onRecordButtonPress = useCallback(() => {
     if (recording) {
       stopRecording();
     } else {
-      startRecording();
+      startRecording().catch(() => Alert.alert("Error while recording"));
     }
   }, [stopRecording, startRecording, recording]);
 
   return (
     <Spacer flex={1}>
-      <CameraPreview ref={camera} style={StyleSheet.absoluteFill} />
+      <CameraPreview
+        ref={camera}
+        type={CameraType.front}
+        style={StyleSheet.absoluteFill}
+      />
       <Spacer
         style={StyleSheet.absoluteFill}
         alignItems="center"
         justifyContent="flex-end"
-        bottomSpacing={64}>
+        bottomSpacing={64}
+      >
         <RecordButton
           onPress={onRecordButtonPress}
           recording={recording}

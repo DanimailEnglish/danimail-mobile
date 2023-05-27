@@ -1,18 +1,18 @@
-import {useTheme} from '@rneui/themed';
-import React from 'react';
+import { useTheme } from "@rneui/themed";
+import React from "react";
 import {
   StyleSheet,
   TouchableHighlight,
   TouchableHighlightProps,
   View,
-} from 'react-native';
+} from "react-native";
 
 const styles = StyleSheet.create({
   button: {
-    alignItems: 'center',
+    alignItems: "center",
     borderRadius: 64,
     height: 64,
-    justifyContent: 'center',
+    justifyContent: "center",
     width: 64,
   },
   recordIcon: {
@@ -37,17 +37,18 @@ export function RecordButton({
   style,
   ...props
 }: RecordButtonProps) {
-  const {theme} = useTheme();
+  const { theme } = useTheme();
   return (
     <TouchableHighlight
-      style={[styles.button, {backgroundColor: theme.colors.white}, style]}
+      style={[styles.button, { backgroundColor: theme.colors.white }, style]}
       disabled={disabled}
-      {...props}>
+      {...props}
+    >
       <View
         style={
           recording
-            ? [styles.stopIcon, {backgroundColor: theme.colors.black}]
-            : [styles.recordIcon, {backgroundColor: theme.colors.error}]
+            ? [styles.stopIcon, { backgroundColor: theme.colors.black }]
+            : [styles.recordIcon, { backgroundColor: theme.colors.error }]
         }
       />
     </TouchableHighlight>

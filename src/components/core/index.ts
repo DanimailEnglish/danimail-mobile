@@ -1,3 +1,3 @@
-export * from './Screen';
-export * from './Spacer';
-export * from './Text';
+export * from "./Screen";
+export * from "./Spacer";
+export * from "./Text";

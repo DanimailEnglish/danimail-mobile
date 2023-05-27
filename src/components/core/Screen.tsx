@@ -1,6 +1,12 @@
-import React from 'react';
-import {ScrollView, StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
-import {Edge, SafeAreaView} from 'react-native-safe-area-context';
+import React from "react";
+import {
+  ScrollView,
+  StyleProp,
+  StyleSheet,
+  View,
+  ViewStyle,
+} from "react-native";
+import { Edge, SafeAreaView } from "react-native-safe-area-context";
 
 const styles = StyleSheet.create({
   screen: {
