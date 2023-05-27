@@ -1,9 +1,10 @@
+import { useIsFocused } from "@react-navigation/native";
 import { Camera, CameraType } from "expo-camera";
 import React, { useCallback, useRef, useState } from "react";
-import { Alert, StyleSheet } from "react-native";
+import { ActivityIndicator, Alert, StyleSheet } from "react-native";
 
+import { useIsAppForeground } from "../../lib/hooks";
 import { Spacer } from "../core";
-import { CameraPreview } from "./CameraPreview";
 import { RecordButton } from "./RecordButton";
 
 export interface RecordingViewProps {
@@ -17,8 +18,21 @@ export function RecordingView({
 }: RecordingViewProps) {
   const [recording, setRecording] = useState(false);
   const [buttonDisabled, setButtonDisabled] = useState(false);
+  const [ratio, setRatio] = useState<string>();
 
   const camera = useRef<Camera>(null);
+
+  const isAppForeground = useIsAppForeground();
+  const isFocused = useIsFocused();
+
+  const selectRatio = useCallback(async () => {
+    const ratios = await camera.current?.getSupportedRatiosAsync();
+    // Choose 16:9 if available, otherwise just use default
+    // This may need better selection logic in the future
+    if (ratios != null && ratios.includes("16:9")) {
+      setRatio("16:9");
+    }
+  }, []);
 
   const startRecording = useCallback(async () => {
     setRecording(true);
@@ -48,11 +62,17 @@ export function RecordingView({
 
   return (
     <Spacer flex={1}>
-      <CameraPreview
-        ref={camera}
-        type={CameraType.front}
-        style={StyleSheet.absoluteFill}
-      />
+      {isAppForeground && isFocused ? (
+        <Camera
+          ref={camera}
+          onCameraReady={selectRatio}
+          ratio={ratio}
+          type={CameraType.front}
+          style={StyleSheet.absoluteFill}
+        />
+      ) : (
+        <ActivityIndicator style={StyleSheet.absoluteFill} />
+      )}
       <Spacer
         style={StyleSheet.absoluteFill}
         alignItems="center"
