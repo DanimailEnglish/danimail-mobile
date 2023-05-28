@@ -11,7 +11,8 @@ import { Edge, SafeAreaView } from "react-native-safe-area-context";
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    padding: 24,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
   },
 });
 
@@ -23,7 +24,7 @@ export interface ScreenProps {
 }
 
 export function Screen({
-  edges,
+  edges = ["left", "right", "bottom"],
   scrollable = false,
   style,
   children,

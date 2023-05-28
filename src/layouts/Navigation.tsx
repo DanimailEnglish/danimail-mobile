@@ -8,6 +8,7 @@ import {
   FinishSignUp,
   HomeScreen,
   LogInScreen,
+  MailboxScreen,
   RecordingPreviewScreen,
   RecordVideoScreen,
   SignUpScreen,
@@ -54,6 +55,11 @@ export function Navigation() {
               name="RecordVideo"
               component={RecordVideoScreen}
               options={{ title: "Record Video" }}
+            />
+            <Stack.Screen
+              name="Mailbox"
+              component={MailboxScreen}
+              options={{ title: "Mailbox" }}
             />
             <Stack.Screen
               name="RecordingPreview"

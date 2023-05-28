@@ -1,4 +1,6 @@
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+
+import type { MailboxTabs } from "../screens/Mailbox";
 
 export type RootStackParamList = {
   Home: undefined;
@@ -7,6 +9,7 @@ export type RootStackParamList = {
   LogIn: undefined;
   SignUp: undefined;
   FinishSignUp: undefined;
+  Mailbox: { tab?: MailboxTabs };
 };
 
 export type RootStackNavigationProp =

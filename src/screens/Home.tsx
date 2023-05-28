@@ -43,6 +43,10 @@ export function HomeScreen({ navigation }: HomeScreenProps): JSX.Element {
     navigation.navigate("RecordVideo");
   }, [navigation]);
 
+  const navToMailbox = useCallback(() => {
+    navigation.navigate("Mailbox", {});
+  }, [navigation]);
+
   const navToLogIn = useCallback(() => {
     navigation.navigate("LogIn");
   }, [navigation]);
@@ -69,6 +73,9 @@ export function HomeScreen({ navigation }: HomeScreenProps): JSX.Element {
           </Spacer>
           <Spacer verticalSpacing={4}>
             <Button onPress={navToRecordVideo}>Record Video</Button>
+          </Spacer>
+          <Spacer verticalSpacing={4}>
+            <Button onPress={navToMailbox}>Mailbox</Button>
           </Spacer>
           <Spacer verticalSpacing={4}>
             <Button onPress={logOut}>Log Out</Button>
