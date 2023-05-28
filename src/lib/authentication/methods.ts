@@ -25,6 +25,6 @@ export async function logInWithEmail({
   await signInWithEmailAndPassword(auth, email, password);
 }
 
-export async function logOut() {
-  await signOut(auth);
+export function logOut() {
+  signOut(auth);
 }
