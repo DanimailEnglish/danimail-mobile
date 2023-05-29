@@ -1,4 +1,14 @@
-import type { Timestamp } from "firebase/firestore";
+import type { QueryDocumentSnapshot, Timestamp } from "firebase/firestore";
+
+export interface PaginationOptions<DocumentType> {
+  limit?: number;
+  after?: QueryDocumentSnapshot<DocumentType>;
+}
+
+export interface PaginationInfo<DocumentType> {
+  hasNextPage: boolean;
+  endCursor: QueryDocumentSnapshot<DocumentType>;
+}
 
 export interface FirestoreUser {
   createdAt: Timestamp;
@@ -21,6 +31,7 @@ export interface FirestoreVideo {
   muxUploadId: string;
   muxAssetId?: string;
   playbackUrl?: string;
+  thumbnailUrl?: string;
   status:
     | "UPLOADING"
     | "UPLOADING_ERROR"

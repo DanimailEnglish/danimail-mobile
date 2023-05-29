@@ -3,7 +3,8 @@ import { Tab, TabView } from "@rneui/themed";
 import React, { ReactNode, useState } from "react";
 import { StyleSheet, View } from "react-native";
 
-import { Screen, Text } from "../components";
+import { Screen, Spacer, Text } from "../components";
+import { SentVideos } from "../components/video/SentVideos";
 import type { RootStackParamList } from "../layouts";
 
 export type MailboxScreenProps = NativeStackScreenProps<
@@ -35,7 +36,7 @@ const TABS_DATA: TabData[] = [
     id: MailboxTabs.Sent,
     title: "Sent",
     icon: "email-send-outline",
-    content: <Text>Sent</Text>,
+    content: <SentVideos />,
   },
   {
     id: MailboxTabs.Favorites,
@@ -76,16 +77,20 @@ export function MailboxScreen({
           ))}
         </Tab>
 
-        <TabView
-          value={index}
-          onChange={setIndex}
-          animationType="timing"
-          animationConfig={{ duration: 300, useNativeDriver: true }}
-        >
-          {TABS_DATA.map(({ id, content }) => (
-            <TabView.Item key={id}>{content}</TabView.Item>
-          ))}
-        </TabView>
+        <Spacer topSpacing={8} flex={1}>
+          <TabView
+            value={index}
+            onChange={setIndex}
+            animationType="timing"
+            animationConfig={{ duration: 300, useNativeDriver: true }}
+          >
+            {TABS_DATA.map(({ id, content }) => (
+              <TabView.Item key={id} style={styles.tabContainer}>
+                {content}
+              </TabView.Item>
+            ))}
+          </TabView>
+        </Spacer>
       </View>
     </Screen>
   );

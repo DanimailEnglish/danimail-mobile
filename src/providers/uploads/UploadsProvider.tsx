@@ -1,6 +1,5 @@
 import { createUploadTask } from "expo-file-system";
 import React, { useCallback, useMemo, useState } from "react";
-import { v4 as uuidV4 } from "uuid";
 
 import { Functions } from "../../lib/functions";
 import type { UploadsContextValue } from "./types";
@@ -18,30 +17,19 @@ export function UploadsProvider({
   >({});
 
   const uploadToMux = useCallback(async (filePath: string) => {
-    const id = uuidV4();
-
-    // preparing state
-    setUploadStatuses((previous) => ({
-      ...previous,
-      [id]: {},
-    }));
-
     const {
       data: { uploadUrl, videoId },
     } = await Functions.createVideo({});
 
     // uploading state
     setUploadStatuses((previous) => {
-      if (previous[id] == null) {
+      if (previous[videoId] == null) {
         return previous;
       }
 
       return {
         ...previous,
-        [id]: {
-          ...previous[id],
-          videoId,
-        },
+        [videoId]: { uploadProgress: 0 },
       };
     });
 
@@ -56,14 +44,13 @@ export function UploadsProvider({
           data.totalBytesSent / data.totalBytesExpectedToSend;
 
         setUploadStatuses((previous) => {
-          if (previous[id] == null) {
+          if (previous[videoId] == null) {
             return previous;
           }
 
           return {
             ...previous,
-            [id]: {
-              ...previous[id],
+            [videoId]: {
               uploadProgress,
             },
           };

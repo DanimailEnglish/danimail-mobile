@@ -1,6 +1,5 @@
 export interface UploadStatus {
-  videoId?: string;
-  uploadProgress?: number;
+  uploadProgress: number;
 }
 
 export type UploadStatuses = { [id: string]: UploadStatus };

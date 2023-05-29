@@ -34,7 +34,7 @@ export function CurrentUserProvider({
   useEffect(() => {
     const userId = authUser?.uid;
     if (userId != null) {
-      const subscriber = Firestore.getUser(userId, (snapshot) => {
+      const subscriber = Firestore.onUserSnapshot(userId, (snapshot) => {
         setFirestoreUser(snapshot.data() ?? null);
       });
 

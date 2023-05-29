@@ -1,5 +1,3 @@
-import "react-native-get-random-values";
-
 import { ThemeProvider } from "@rneui/themed";
 import React from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
