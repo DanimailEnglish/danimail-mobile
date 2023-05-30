@@ -9,11 +9,11 @@ const styles = StyleSheet.create({
   skeleton: { height: "100%", width: "100%" },
 });
 
-export interface LoadingTileProps {
+export interface MailboxTileLoadingProps {
   style?: StyleProp<ViewStyle>;
 }
 
-export function LoadingTile({ style }: LoadingTileProps) {
+export function MailboxTileLoading({ style }: MailboxTileLoadingProps) {
   return (
     <Spacer style={[styles.container, style]}>
       <Skeleton animation="pulse" style={styles.skeleton} />

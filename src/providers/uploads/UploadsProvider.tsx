@@ -22,16 +22,10 @@ export function UploadsProvider({
     } = await Functions.createVideo({});
 
     // uploading state
-    setUploadStatuses((previous) => {
-      if (previous[videoId] == null) {
-        return previous;
-      }
-
-      return {
-        ...previous,
-        [videoId]: { uploadProgress: 0 },
-      };
-    });
+    setUploadStatuses((previous) => ({
+      ...previous,
+      [videoId]: { uploadProgress: 0 },
+    }));
 
     const uploadTask = createUploadTask(
       uploadUrl,

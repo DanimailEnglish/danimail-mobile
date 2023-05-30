@@ -30,8 +30,7 @@ export interface FirestoreVideo {
   replyToVideoId?: string;
   muxUploadId: string;
   muxAssetId?: string;
-  playbackUrl?: string;
-  thumbnailUrl?: string;
+  muxPlaybackId?: string;
   status:
     | "UPLOADING"
     | "UPLOADING_ERROR"

@@ -1,18 +1,11 @@
 import type { QueryDocumentSnapshot } from "firebase/firestore";
 import React, { useCallback } from "react";
-import {
-  FlatList,
-  ListRenderItem,
-  StyleProp,
-  StyleSheet,
-  View,
-  ViewStyle,
-} from "react-native";
+import { FlatList, ListRenderItem, StyleProp, ViewStyle } from "react-native";
 
 import type { FirestoreVideo } from "../../lib/firestore";
 import { Spacer } from "../core";
-import { LoadingTile } from "./LoadingTile";
-import { VideoTile } from "./VideoTile";
+import { MailboxTile } from "./MailboxTile";
+import { MailboxTileLoading } from "./MailboxTileLoading";
 
 export interface VideoListProps {
   columns: number;
@@ -22,14 +15,6 @@ export interface VideoListProps {
   onErrorDismiss?: () => void | Promise<void>;
   style?: StyleProp<ViewStyle>;
   videos: QueryDocumentSnapshot<FirestoreVideo>[];
-}
-
-const styles = StyleSheet.create({
-  itemSeparator: { height: 4 },
-});
-
-function ItemSeparator() {
-  return <View style={styles.itemSeparator} />;
 }
 
 export function VideoList({
@@ -52,11 +37,11 @@ export function VideoList({
     QueryDocumentSnapshot<FirestoreVideo> | "loading"
   > = useCallback(
     ({ item }) => (
-      <Spacer flex={1 / columns} horizontalSpacing={2}>
+      <Spacer flex={1 / columns} spacing={2}>
         {item === "loading" ? (
-          <LoadingTile />
+          <MailboxTileLoading />
         ) : (
-          <VideoTile imageUri={item.data().thumbnailUrl} />
+          <MailboxTile videoId={item.id} videoData={item.data()} />
         )}
       </Spacer>
     ),
@@ -71,7 +56,6 @@ export function VideoList({
         onEndReached={onEndReached}
         onEndReachedThreshold={0.5}
         numColumns={columns}
-        ItemSeparatorComponent={ItemSeparator}
         style={style}
       />
     </Spacer>

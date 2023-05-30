@@ -1,8 +1,11 @@
 import {
   collection,
+  documentId,
   FirestoreDataConverter,
+  onSnapshot,
   orderBy,
   query,
+  QuerySnapshot,
   where,
 } from "firebase/firestore";
 
@@ -39,8 +42,19 @@ export async function getSentVideos(
   const unpaginatedQuery = query(
     videosCollection(),
     where("senderId", "==", userId),
-    where("status", "==", "READY"),
     orderBy("createdAt", "desc"),
   );
   return getPaginatedDocs(unpaginatedQuery, paginationOptions);
+}
+
+export function onVideosSnapshot(
+  videoIds: string[],
+  onNext: (snapshot: QuerySnapshot<FirestoreVideo>) => void,
+  onError?: (error: Error) => void,
+): () => void {
+  return onSnapshot(
+    query(videosCollection(), where(documentId(), "in", videoIds)),
+    onNext,
+    onError,
+  );
 }
