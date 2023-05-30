@@ -16,7 +16,7 @@ const PAGE_SIZE = 10;
 
 export function SentVideos() {
   const { authUser } = useCurrentUser();
-  const { uploadStatuses } = useUploads();
+  const { uploadStatuses, removeUploadStatus } = useUploads();
   const [queriedVideos, setQueriedVideos] = useState<
     QueryDocumentSnapshot<FirestoreVideo>[]
   >([]);
@@ -25,6 +25,9 @@ export function SentVideos() {
   >([]);
 
   const videos = useMemo(() => {
+    // The uploading videos update in real time and need to replace the static
+    // ones from the regular query. Any leftover ones are assumed to have been
+    // created after the initial load and are placed in front.
     const newQueriedVideos = [...queriedVideos];
     const filteredUploadingVideos = uploadingVideos.filter((uploadingVideo) => {
       const matchingVideoIndex = newQueriedVideos.findIndex(
@@ -90,12 +93,24 @@ export function SentVideos() {
         uploadStatusKeys,
         (results) => {
           setUploadingVideos(results.docs);
+          results.forEach((result) => {
+            if (
+              result.data().status !== "UPLOADING" &&
+              result.data().status !== "PROCESSING"
+            ) {
+              setQueriedVideos((prevQueriedVideos) => [
+                result,
+                ...prevQueriedVideos,
+              ]);
+              removeUploadStatus(result.id);
+            }
+          });
         },
       );
       return subscriber;
     }
     return undefined;
-  }, [uploadStatuses]);
+  }, [removeUploadStatus, uploadStatuses]);
 
   return (
     <VideoList

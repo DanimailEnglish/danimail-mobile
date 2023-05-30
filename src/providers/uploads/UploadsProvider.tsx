@@ -16,6 +16,14 @@ export function UploadsProvider({
     UploadsContextValue["uploadStatuses"]
   >({});
 
+  const removeUploadStatus = useCallback((id: string) => {
+    setUploadStatuses((prevUploadStatuses) => {
+      const newUploadStatuses = { ...prevUploadStatuses };
+      delete newUploadStatuses[id];
+      return newUploadStatuses;
+    });
+  }, []);
+
   const uploadToMux = useCallback(async (filePath: string) => {
     const {
       data: { uploadUrl, videoId },
@@ -56,8 +64,8 @@ export function UploadsProvider({
   }, []);
 
   const contextValue = useMemo(
-    () => ({ uploadToMux, uploadStatuses }),
-    [uploadStatuses, uploadToMux],
+    () => ({ uploadToMux, removeUploadStatus, uploadStatuses }),
+    [removeUploadStatus, uploadStatuses, uploadToMux],
   );
 
   return (
