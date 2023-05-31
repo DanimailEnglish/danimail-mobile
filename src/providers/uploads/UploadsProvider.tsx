@@ -1,4 +1,4 @@
-import { createUploadTask } from "expo-file-system";
+import * as FileSystem from "expo-file-system";
 import React, { useCallback, useMemo, useState } from "react";
 
 import { Functions } from "../../lib/functions";
@@ -27,7 +27,7 @@ export function UploadsProvider({
       [videoId]: 0,
     }));
 
-    const uploadTask = createUploadTask(
+    const uploadTask = FileSystem.createUploadTask(
       uploadUrl,
       filePath,
       {
@@ -37,20 +37,15 @@ export function UploadsProvider({
         const uploadProgress =
           data.totalBytesSent / data.totalBytesExpectedToSend;
 
-        setUploadProgresses((previous) => {
-          if (previous[videoId] == null) {
-            return previous;
-          }
-
-          return {
-            ...previous,
-            [videoId]: uploadProgress,
-          };
-        });
+        setUploadProgresses((previous) => ({
+          ...previous,
+          [videoId]: uploadProgress,
+        }));
       },
     );
 
     await uploadTask.uploadAsync();
+    await FileSystem.deleteAsync(filePath);
   }, []);
 
   const contextValue = useMemo(

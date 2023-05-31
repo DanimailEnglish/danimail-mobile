@@ -1,6 +1,7 @@
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Button } from "@rneui/themed";
 import { ResizeMode, Video } from "expo-av";
+import * as FileSystem from "expo-file-system";
 import React, { useCallback, useEffect, useRef } from "react";
 import { Alert, StyleSheet } from "react-native";
 
@@ -62,14 +63,17 @@ export function RecordingPreviewScreen({
           {
             text: "Discard",
             style: "destructive",
-            onPress: () => navigation.dispatch(e.data.action),
+            onPress: async () => {
+              await FileSystem.deleteAsync(videoFile);
+              navigation.dispatch(e.data.action);
+            },
           },
         ],
       );
     });
 
     return subscriber;
-  }, [navigation]);
+  }, [navigation, videoFile]);
 
   return (
     <Video
