@@ -12,6 +12,7 @@ import {
   RecordingPreviewScreen,
   RecordVideoScreen,
   SignUpScreen,
+  VideoScreen,
 } from "../screens";
 import type { RootStackParamList } from "./types";
 
@@ -52,14 +53,19 @@ export function Navigation() {
         ) : (
           <>
             <Stack.Screen
-              name="RecordVideo"
-              component={RecordVideoScreen}
-              options={{ title: "Record Video" }}
-            />
-            <Stack.Screen
               name="Mailbox"
               component={MailboxScreen}
               options={{ title: "Mailbox" }}
+            />
+            <Stack.Screen
+              name="Video"
+              component={VideoScreen}
+              options={{ title: "Video" }}
+            />
+            <Stack.Screen
+              name="RecordVideo"
+              component={RecordVideoScreen}
+              options={{ title: "Record Video" }}
             />
             <Stack.Screen
               name="RecordingPreview"

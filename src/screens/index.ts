@@ -5,3 +5,4 @@ export * from "./Mailbox";
 export * from "./RecordingPreview";
 export * from "./RecordVideo";
 export * from "./SignUp";
+export * from "./Video";
