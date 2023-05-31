@@ -2,11 +2,13 @@ import type { QueryDocumentSnapshot, Timestamp } from "firebase/firestore";
 
 export interface PaginationOptions<DocumentType> {
   limit?: number;
+  before?: QueryDocumentSnapshot<DocumentType>;
   after?: QueryDocumentSnapshot<DocumentType>;
 }
 
 export interface PaginationInfo<DocumentType> {
   hasNextPage: boolean;
+  startCursor: QueryDocumentSnapshot<DocumentType>;
   endCursor: QueryDocumentSnapshot<DocumentType>;
 }
 

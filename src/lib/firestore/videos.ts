@@ -1,60 +1,62 @@
 import {
   collection,
-  documentId,
+  doc,
+  DocumentSnapshot,
   FirestoreDataConverter,
   onSnapshot,
   orderBy,
   query,
+  QueryDocumentSnapshot,
   QuerySnapshot,
   where,
 } from "firebase/firestore";
 
 import { db } from "../../../firebaseConfig";
-import { getPaginatedDocs } from "./pagination";
+import { getPaginatedDocs, paginateQuery } from "./pagination";
 import type { FirestoreVideo, PaginationOptions } from "./types";
 
-const videoConverter: FirestoreDataConverter<FirestoreVideo> = {
+export const videoConverter: FirestoreDataConverter<FirestoreVideo> = {
   toFirestore: (video) => video,
   fromFirestore: (videoDoc) => videoDoc.data() as FirestoreVideo,
 };
 
-function videosCollection() {
+export function videosCollection() {
   return collection(db, "videos").withConverter(videoConverter);
 }
 
-export async function getReceivedVideos(
-  userId: string,
-  paginationOptions?: PaginationOptions<FirestoreVideo>,
-) {
-  const unpaginatedQuery = query(
-    videosCollection(),
-    where("recipientId", "==", userId),
-    where("status", "==", "READY"),
-    orderBy("createdAt", "desc"),
-  );
-  return getPaginatedDocs(unpaginatedQuery, paginationOptions);
+export function videosDoc(videoId: string) {
+  return doc(videosCollection(), videoId);
 }
 
-export async function getSentVideos(
-  userId: string,
+export function onVideoSnapshot(
+  videoId: string,
+  onNext: (snapshot: DocumentSnapshot<FirestoreVideo>) => void,
+  onError?: (error: Error) => void,
+): () => void {
+  return onSnapshot(videosDoc(videoId), onNext, onError);
+}
+
+export function sentVideosQuery(senderId: string) {
+  return query(
+    videosCollection(),
+    where("senderId", "==", senderId),
+    orderBy("createdAt", "desc"),
+  );
+}
+
+export async function getPaginatedSentVideos(
+  senderId: string,
   paginationOptions: PaginationOptions<FirestoreVideo>,
 ) {
-  const unpaginatedQuery = query(
-    videosCollection(),
-    where("senderId", "==", userId),
-    orderBy("createdAt", "desc"),
-  );
-  return getPaginatedDocs(unpaginatedQuery, paginationOptions);
+  return getPaginatedDocs(sentVideosQuery(senderId), paginationOptions);
 }
 
-export function onVideosSnapshot(
-  videoIds: string[],
+export function onNewSentVideosSnapshot(
+  senderId: string,
+  before: QueryDocumentSnapshot<FirestoreVideo>,
   onNext: (snapshot: QuerySnapshot<FirestoreVideo>) => void,
   onError?: (error: Error) => void,
 ): () => void {
-  return onSnapshot(
-    query(videosCollection(), where(documentId(), "in", videoIds)),
-    onNext,
-    onError,
-  );
+  const q = paginateQuery(sentVideosQuery(senderId), { before });
+  return onSnapshot(q, onNext, onError);
 }

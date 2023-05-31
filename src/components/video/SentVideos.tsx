@@ -1,14 +1,8 @@
 import { QueryDocumentSnapshot } from "firebase/firestore";
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
 import { Firestore, FirestoreVideo, PaginationInfo } from "../../lib/firestore";
-import { useCurrentUser, useUploads } from "../../providers";
+import { useCurrentUser } from "../../providers";
 import { VideoList } from "./VideoList";
 
 const COLUMNS = 2;
@@ -16,31 +10,9 @@ const PAGE_SIZE = 10;
 
 export function SentVideos() {
   const { authUser } = useCurrentUser();
-  const { uploadStatuses, removeUploadStatus } = useUploads();
-  const [queriedVideos, setQueriedVideos] = useState<
-    QueryDocumentSnapshot<FirestoreVideo>[]
-  >([]);
-  const [uploadingVideos, setUploadingVideos] = useState<
-    QueryDocumentSnapshot<FirestoreVideo>[]
-  >([]);
-
-  const videos = useMemo(() => {
-    // The uploading videos update in real time and need to replace the static
-    // ones from the regular query. Any leftover ones are assumed to have been
-    // created after the initial load and are placed in front.
-    const newQueriedVideos = [...queriedVideos];
-    const filteredUploadingVideos = uploadingVideos.filter((uploadingVideo) => {
-      const matchingVideoIndex = newQueriedVideos.findIndex(
-        (queriedVideo) => queriedVideo.id === uploadingVideo.id,
-      );
-      if (matchingVideoIndex !== -1) {
-        newQueriedVideos[matchingVideoIndex] = uploadingVideo;
-        return false;
-      }
-      return true;
-    });
-    return [...filteredUploadingVideos, ...newQueriedVideos];
-  }, [queriedVideos, uploadingVideos]);
+  const [videos, setVideos] = useState<QueryDocumentSnapshot<FirestoreVideo>[]>(
+    [],
+  );
 
   const [error, setError] = useState<string>();
   const [loading, setLoading] = useState<boolean>(false);
@@ -52,13 +24,14 @@ export function SentVideos() {
     if (authUser?.uid != null) {
       setLoading(true);
 
-      const limit = (queriedVideos.length % COLUMNS) + PAGE_SIZE;
-      Firestore.getSentVideos(authUser?.uid, {
+      // Request enough to fill in incomplete rows
+      const limit = (videos.length % COLUMNS) + PAGE_SIZE;
+      Firestore.getPaginatedSentVideos(authUser?.uid, {
         limit,
         after: pageInfo?.endCursor,
       })
         .then(({ data, paginationInfo }) => {
-          setQueriedVideos((prevVideos) => [...prevVideos, ...data]);
+          setVideos((prevVideos) => [...prevVideos, ...data]);
           setPageInfo(paginationInfo);
           setLoading(false);
         })
@@ -67,7 +40,7 @@ export function SentVideos() {
           setLoading(false);
         });
     }
-  }, [authUser?.uid, pageInfo?.endCursor, queriedVideos.length]);
+  }, [authUser?.uid, pageInfo?.endCursor, videos.length]);
 
   const loadMore = useCallback(() => {
     if (!loading && pageInfo?.hasNextPage) {
@@ -87,30 +60,20 @@ export function SentVideos() {
   }, [loadVideos]);
 
   useEffect(() => {
-    const uploadStatusKeys = Object.keys(uploadStatuses);
-    if (uploadStatusKeys.length > 0) {
-      const subscriber = Firestore.onVideosSnapshot(
-        uploadStatusKeys,
-        (results) => {
-          setUploadingVideos(results.docs);
-          results.forEach((result) => {
-            if (
-              result.data().status !== "UPLOADING" &&
-              result.data().status !== "PROCESSING"
-            ) {
-              setQueriedVideos((prevQueriedVideos) => [
-                result,
-                ...prevQueriedVideos,
-              ]);
-              removeUploadStatus(result.id);
-            }
-          });
+    const latestVideo = videos[0];
+    if (latestVideo != null && authUser?.uid != null) {
+      const subscriber = Firestore.onNewSentVideosSnapshot(
+        authUser.uid,
+        latestVideo,
+        (newVideos) => {
+          setVideos((prevVideos) => [...newVideos.docs, ...prevVideos]);
         },
       );
+
       return subscriber;
     }
     return undefined;
-  }, [removeUploadStatus, uploadStatuses]);
+  }, [authUser?.uid, videos]);
 
   return (
     <VideoList

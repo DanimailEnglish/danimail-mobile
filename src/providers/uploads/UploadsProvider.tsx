@@ -12,17 +12,9 @@ export interface UploadsProviderProps {
 export function UploadsProvider({
   children,
 }: UploadsProviderProps): JSX.Element {
-  const [uploadStatuses, setUploadStatuses] = useState<
-    UploadsContextValue["uploadStatuses"]
+  const [uploadProgresses, setUploadProgresses] = useState<
+    UploadsContextValue["uploadProgresses"]
   >({});
-
-  const removeUploadStatus = useCallback((id: string) => {
-    setUploadStatuses((prevUploadStatuses) => {
-      const newUploadStatuses = { ...prevUploadStatuses };
-      delete newUploadStatuses[id];
-      return newUploadStatuses;
-    });
-  }, []);
 
   const uploadToMux = useCallback(async (filePath: string) => {
     const {
@@ -30,9 +22,9 @@ export function UploadsProvider({
     } = await Functions.createVideo({});
 
     // uploading state
-    setUploadStatuses((previous) => ({
+    setUploadProgresses((previous) => ({
       ...previous,
-      [videoId]: { uploadProgress: 0 },
+      [videoId]: 0,
     }));
 
     const uploadTask = createUploadTask(
@@ -45,16 +37,14 @@ export function UploadsProvider({
         const uploadProgress =
           data.totalBytesSent / data.totalBytesExpectedToSend;
 
-        setUploadStatuses((previous) => {
+        setUploadProgresses((previous) => {
           if (previous[videoId] == null) {
             return previous;
           }
 
           return {
             ...previous,
-            [videoId]: {
-              uploadProgress,
-            },
+            [videoId]: uploadProgress,
           };
         });
       },
@@ -64,8 +54,8 @@ export function UploadsProvider({
   }, []);
 
   const contextValue = useMemo(
-    () => ({ uploadToMux, removeUploadStatus, uploadStatuses }),
-    [removeUploadStatus, uploadStatuses, uploadToMux],
+    () => ({ uploadToMux, uploadProgresses }),
+    [uploadProgresses, uploadToMux],
   );
 
   return (

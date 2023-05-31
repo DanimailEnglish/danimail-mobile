@@ -11,8 +11,8 @@ export interface UploadingVideoTileContentProps {
 export function UploadingVideoTileContent({
   videoId,
 }: UploadingVideoTileContentProps) {
-  const { uploadStatuses } = useUploads();
-  const uploadProgress = uploadStatuses[videoId]?.uploadProgress;
+  const { uploadProgresses } = useUploads();
+  const uploadProgress = uploadProgresses[videoId];
 
   if (uploadProgress == null) {
     return <Text>Failed to complete upload</Text>;

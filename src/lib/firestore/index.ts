@@ -1,11 +1,18 @@
 import { onUserSnapshot } from "./users";
-import { getReceivedVideos, getSentVideos, onVideosSnapshot } from "./videos";
+import {
+  getPaginatedSentVideos,
+  onNewSentVideosSnapshot,
+  onVideoSnapshot,
+} from "./videos";
 
 export * from "./types";
 
 export const Firestore = {
+  // Users
   onUserSnapshot,
-  onVideosSnapshot,
-  getReceivedVideos,
-  getSentVideos,
+
+  // Videos
+  onVideoSnapshot,
+  onNewSentVideosSnapshot,
+  getPaginatedSentVideos,
 };
